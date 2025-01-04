@@ -69,7 +69,75 @@ function generateHeader(){
 
 generateHeader()
 
-function RenderTable(array) {
+function generateForm(){
+
+    const FormFields = [
+        {id: 'korszak', label: 'Korszak Megnevezése: ', type: 'text'},
+        {id: 'evszam1', label: '1. esemény évszám: ', type: 'text'},
+        {id: 'megnev1', label: '1. esemény megnevezés: ', type: 'text'},
+        { 
+            id: 'tan1', 
+            label: '1. esemény tananyag: ', 
+            type: 'select', 
+            options: ['', 'Magyar történelem', 'Egyetemes történelem'] 
+        },
+        {id: 'evszam2', label: '2. esemény évszám: ', type: 'text'},
+        {id: 'megnev2', label: '2. esemény megnevezés: ', type: 'text'},
+        {id: 'tan2', label: '2. esemény tananyag: ', type: 'select',
+            options: ['', 'Magyar történelem', 'Egyetemes történelem']
+        },
+
+    ]
+
+    const form = document.createElement('form')
+    form.id='form'
+    document.body.appendChild(form)
+
+    for (fields of FormFields){
+        const div = document.createElement('div')
+        div.classList.add('field')
+
+        const label = document.createElement('label')
+        label.innerText = fields.label
+        label.htmlFor = fields.id
+        div.appendChild(label)
+
+        if (fields.type === 'select') {
+            const select = document.createElement('select')
+            select.id = fields.id
+            for (const option of fields.options) {
+                const optionElement = document.createElement('option')
+                optionElement.value = option
+                optionElement.textContent = option
+                select.appendChild(optionElement)
+            }
+            div.appendChild(select)
+        } else {
+            const input = document.createElement('input')
+            input.type = fields.type
+            input.id = fields.id
+            div.appendChild(input)
+        }
+
+        
+
+       
+
+        const error = document.createElement('div')
+        error.classList = "error"
+        div.appendChild(error)
+        form.appendChild(div)
+    }
+
+    const button = document.createElement('button')
+    button.type = 'submit'
+    button.innerText = "Hozzáadás"
+    form.appendChild(button)
+
+}
+generateForm()
+function RenderTable() {
+    tbody.innerHTML = ''
     for (const currentElement of array) {
         const tbodyrow = document.createElement('tr');
         tbody.appendChild(tbodyrow);
@@ -120,19 +188,19 @@ const form = document.getElementById('form')
 form.addEventListener('submit', function(e){
     e.preventDefault()
 
-    const idoszakHTMLelement = document.getElementById('idoszak')
+    const idoszakHTMLelement = document.getElementById('korszak')
 
     const EvszamHTMLelement = document.getElementById('evszam1')
 
-    const EsemenyHTMLelement = document.getElementById('esemeny1')  
+    const EsemenyHTMLelement = document.getElementById('megnev1')  
 
-    const TananyagHTMLelement = document.getElementById('tananyag1')
+    const TananyagHTMLelement = document.getElementById('tan1')
 
     const Evszam2HTMLelement = document.getElementById('evszam2')
 
-    const Esemeny2HTMLelement = document.getElementById('esemeny2') 
+    const Esemeny2HTMLelement = document.getElementById('megnev2') 
     
-    const Tananyag2HTMLelement = document.getElementById('tananyag2')
+    const Tananyag2HTMLelement = document.getElementById('tan2')
 
 
     const ThisForm = e.currentTarget
@@ -178,7 +246,7 @@ form.addEventListener('submit', function(e){
         const tananyag2Value = Tananyag2HTMLelement.value
 
         const newEvszam = {
-            Idoszak: idoszakValue,
+            idoszak: idoszakValue,
             Evszam: evszam1Value,
             Evszam2: evszam2Value,
             Esemeny: esemeny1Value,
@@ -209,7 +277,7 @@ function simplevalidation(inputhtmlmessage, errormessage){
 
     let validation = true
 
-    if(inputhtmlmessage === ''){
+    if(inputhtmlmessage.value === ''){
 
         const parent = inputhtmlmessage.parentElement;
         const place_of_error = parent.querySelector('.error')
@@ -234,8 +302,7 @@ function complexvalidation(Evszam2input, Esemeny2input, Tananyag2input, errormes
 
         if (place_of_error !== undefined){
 
-            place_of_error.innerHTML = console.error();
-            
+            place_of_error.innerHTML = errormessage;            
         }
         validation = false
     }
@@ -246,8 +313,7 @@ function complexvalidation(Evszam2input, Esemeny2input, Tananyag2input, errormes
 
         if (place_of_error !== undefined){
 
-            place_of_error.innerHTML = console.error();
-            
+            place_of_error.innerHTML = errormessage;            
         }
         validation = false
     }
@@ -258,7 +324,7 @@ function complexvalidation(Evszam2input, Esemeny2input, Tananyag2input, errormes
 
         if (place_of_error !== undefined){
 
-            place_of_error.innerHTML = console.error();
+            place_of_error.innerHTML = errormessage;
             
         }
         validation = false
