@@ -114,3 +114,155 @@ function RenderTable(array) {
 
 
 RenderTable(array)
+
+const form = document.getElementById('form')
+
+form.addEventListener('submit', function(e){
+    e.preventDefault()
+
+    const idoszakHTMLelement = document.getElementById('idoszak')
+
+    const EvszamHTMLelement = document.getElementById('evszam1')
+
+    const EsemenyHTMLelement = document.getElementById('esemeny1')  
+
+    const TananyagHTMLelement = document.getElementById('tananyag1')
+
+    const Evszam2HTMLelement = document.getElementById('evszam2')
+
+    const Esemeny2HTMLelement = document.getElementById('esemeny2') 
+    
+    const Tananyag2HTMLelement = document.getElementById('tananyag2')
+
+
+    const ThisForm = e.currentTarget
+
+    const errorElement = ThisForm.querySelectorAll('.error')
+
+
+    for (const errorok of errorElement){
+        errorok.innerHTML = ''
+
+
+    }
+
+    let validation = true
+
+    if (!simplevalidation(idoszakHTMLelement, "Add meg az időszakot")){
+        validation = false
+    }
+
+    if (!simplevalidation(EvszamHTMLelement, "Add meg az évszámot")){
+        validation = false
+    }
+
+    if (!simplevalidation(EsemenyHTMLelement, "Add meg az eseményt")){
+        validation = false
+    }
+
+    if (!simplevalidation(TananyagHTMLelement, "Add meg a tananyagot")){
+        validation = false
+    }
+
+    if(!complexvalidation(Evszam2HTMLelement, Esemeny2HTMLelement, Tananyag2HTMLelement, "Az összes adatot meg kell adni a másodikhoz")){
+        validation = false
+    }
+
+    if(validation){
+        const idoszakValue = idoszakHTMLelement.value
+        const evszam1Value = EvszamHTMLelement.value
+        const evszam2Value = Evszam2HTMLelement.value
+        const esemeny1Value = EsemenyHTMLelement.value
+        const esemeny2Value = Esemeny2HTMLelement.value
+        const tananyag1Value = TananyagHTMLelement.value
+        const tananyag2Value = Tananyag2HTMLelement.value
+
+        const newEvszam = {
+            Idoszak: idoszakValue,
+            Evszam: evszam1Value,
+            Evszam2: evszam2Value,
+            Esemeny: esemeny1Value,
+            Esemeny2: esemeny2Value,
+            Tananyag: tananyag1Value,
+            Tananyag2: tananyag2Value
+
+        }
+
+        if(newEvszam.Evszam2 === '' && newEvszam.Esemeny2 === '' && newEvszam.Tananyag2 ===''){
+
+            newEvszam.Evszam2 = undefined
+            newEvszam.Esemeny2 = undefined
+            newEvszam.Tananyag2 = undefined
+        }
+
+        array.push(newEvszam)
+        tbody.innerHTML = ''
+        RenderTable()
+        ThisForm.reset()
+
+    }
+
+})
+
+
+function simplevalidation(inputhtmlmessage, errormessage){
+
+    let validation = true
+
+    if(inputhtmlmessage === ''){
+
+        const parent = inputhtmlmessage.parentElement;
+        const place_of_error = parent.querySelector('.error')
+
+        if(place_of_error != undefined){
+
+            place_of_error.innerHTML = errormessage
+
+        }
+        validation = false
+
+    }
+    return validation
+}
+
+function complexvalidation(Evszam2input, Esemeny2input, Tananyag2input, errormessage){
+    let validation = true
+
+    if(Evszam2input.value === '' && Esemeny2input.value !== '' && Tananyag2input.value !== ''){
+        const parent = Evszam2input.parentElement
+        const place_of_error = parent.querySelector('.error')
+
+        if (place_of_error !== undefined){
+
+            place_of_error.innerHTML = console.error();
+            
+        }
+        validation = false
+    }
+
+    if(Evszam2input.value !== '' && Esemeny2input.value === '' && Tananyag2input.value !== ''){
+        const parent = Esemeny2input.parentElement
+        const place_of_error = parent.querySelector('.error')
+
+        if (place_of_error !== undefined){
+
+            place_of_error.innerHTML = console.error();
+            
+        }
+        validation = false
+    }
+
+    if(Evszam2input.value !== '' && Esemeny2input.value !== '' && Tananyag2input.value === ''){
+        const parent = Tananyag2input.parentElement
+        const place_of_error = parent.querySelector('.error')
+
+        if (place_of_error !== undefined){
+
+            place_of_error.innerHTML = console.error();
+            
+        }
+        validation = false
+    }
+
+    return validation
+}
